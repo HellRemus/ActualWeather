@@ -3,7 +3,6 @@ package com.actualweather.actualweather;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -13,8 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class ActualWeather extends JavaPlugin {
-    private static final String API_KEY = "YOUR_OPENWEATHERMAP_API_KEY";
-    private static final String CITY = "YOUR_CITY_NAME";
+    private static final String API_KEY = "c26ead3d4b5b4b8381c185109240306";
+    private static final String CITY = "Uppsala";
     private static final int INTERVAL = 6000; // 6000 ticks = 5 minutes
 
     @Override
@@ -26,7 +25,7 @@ public class ActualWeather extends JavaPlugin {
         @Override
         public void run() {
             try {
-                String urlString = String.format("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", CITY, API_KEY);
+                String urlString = String.format("http://api.weatherapi.com/v1/current.json?key=%s&q=%s", API_KEY, CITY);
                 URL url = new URL(urlString);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
@@ -42,24 +41,23 @@ public class ActualWeather extends JavaPlugin {
 
                 JSONParser parser = new JSONParser();
                 JSONObject weatherData = (JSONObject) parser.parse(content.toString());
-                JSONArray weatherArray = (JSONArray) weatherData.get("weather");
-                JSONObject weatherObject = (JSONObject) weatherArray.get(0);
-                String weather = (String) weatherObject.get("main");
+                JSONObject current = (JSONObject) weatherData.get("current");
+                JSONObject condition = (JSONObject) current.get("condition");
+                String weather = (String) condition.get("text");
 
                 Bukkit.getScheduler().runTask(ActualWeather.this, () -> {
-                    switch (weather.toLowerCase()) {
-                        case "rain":
-                            Bukkit.getWorlds().get(0).setStorm(true);
-                            Bukkit.getWorlds().get(0).setThundering(false);
-                            break;
-                        case "thunderstorm":
-                            Bukkit.getWorlds().get(0).setStorm(true);
-                            Bukkit.getWorlds().get(0).setThundering(true);
-                            break;
-                        default:
-                            Bukkit.getWorlds().get(0).setStorm(false);
-                            Bukkit.getWorlds().get(0).setThundering(false);
-                            break;
+                    if (weather.toLowerCase().contains("thunder")) {
+                        Bukkit.getWorlds().get(0).setStorm(true);
+                        Bukkit.getWorlds().get(0).setThundering(true);
+                    } else if (weather.toLowerCase().contains("rain") ||
+                            weather.toLowerCase().contains("drizzle") ||
+                            weather.toLowerCase().contains("snow") ||
+                            weather.toLowerCase().contains("hail")) {
+                        Bukkit.getWorlds().get(0).setStorm(true);
+                        Bukkit.getWorlds().get(0).setThundering(false);
+                    } else {
+                        Bukkit.getWorlds().get(0).setStorm(false);
+                        Bukkit.getWorlds().get(0).setThundering(false);
                     }
                 });
 
@@ -69,3 +67,5 @@ public class ActualWeather extends JavaPlugin {
         }
     }
 }
+
+
