@@ -1,0 +1,4 @@
+name: ActualWeather
+version: '${project.version}'
+main: com.actualweather.ActualWeather
+api-version: '1.20'
