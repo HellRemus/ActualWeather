@@ -1,14 +1,12 @@
 package com.actualweather.actualweather;
 
+import com.actualweather.actualweather.commands.ActualWeatherCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -22,9 +20,9 @@ public class ActualWeather extends JavaPlugin {
     @Override
     public void onEnable() {
         // Register the main command executor
-        getCommand("actualweather").setExecutor(new ActualWeatherCommandExecutor(this));
+        getCommand("actualweather").setExecutor(new ActualWeatherCommand(this));
         // Add alias for the main command
-        getCommand("aw").setExecutor(new ActualWeatherCommandExecutor(this));
+        getCommand("aw").setExecutor(new ActualWeatherCommand(this));
 
         // Load configuration file
         saveDefaultConfig();
@@ -73,11 +71,26 @@ public class ActualWeather extends JavaPlugin {
 
                 Bukkit.getScheduler().runTask(ActualWeather.this, () -> {
                     // Weather handling logic
+                    setWeather(weather);
                 });
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void setWeather(String weatherType)  {
+        switch (weatherType){
+            case "clear":
+                Bukkit.getWorlds().get(0).setStorm(false);
+                Bukkit.getWorlds().get(0).setThundering(false);
+            case "rain":
+                Bukkit.getWorlds().get(0).setStorm(true);
+                Bukkit.getWorlds().get(0).setThundering(false);
+            case "storm":
+                Bukkit.getWorlds().get(0).setStorm(true);
+                Bukkit.getWorlds().get(0).setThundering(true);
         }
     }
 }

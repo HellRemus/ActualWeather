@@ -1,14 +1,16 @@
+package com.actualweather.actualweather.commands;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ActualWeatherCommandExecutor implements CommandExecutor {
+public class ActualWeatherCommand implements CommandExecutor {
 
     private final JavaPlugin plugin;
 
-    public ActualWeatherCommandExecutor(JavaPlugin plugin) {
+    public ActualWeatherCommand(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
