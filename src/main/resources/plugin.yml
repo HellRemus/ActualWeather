@@ -1,12 +1,13 @@
 name: ActualWeather
-version: '1.0'
+version: '${project.version}'
 main: com.actualweather.actualweather.ActualWeather
 api-version: '1.20'
 description: A plugin to sync Minecraft weather with real-world weather.
+author: HellRemus
 commands:
   actualweather:
-    usage: /<command>
     description: Administrate the Actualweather plugin.
+    usage: /<command>
   aw:
-    usage: /<command>
     description: Administrate the Actualweather plugin.
+    usage: /<command>
