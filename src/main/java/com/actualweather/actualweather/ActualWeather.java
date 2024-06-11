@@ -13,25 +13,29 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class ActualWeather extends JavaPlugin {
+public final class ActualWeather extends JavaPlugin {
 
     private FileConfiguration config;
+    private static ActualWeather instance;
 
     @Override
     public void onEnable() {
+        instance = this;
+
         // Register the main command executor
-        getCommand("actualweather").setExecutor(new ActualWeatherCommand(this));
+        getCommand("actualweather").setExecutor(new ActualWeatherCommand());
+
         // Add alias for the main command
-        getCommand("aw").setExecutor(new ActualWeatherCommand(this));
+        getCommand("aw").setExecutor(new ActualWeatherCommand());
 
         // Load configuration file
         saveDefaultConfig();
         config = getConfig();
 
         // Read configuration values
-        String apiKey = getConfig().getString("API_key");
-        String city = getConfig().getString("city");
-        int updateInterval = getConfig().getInt("update_interval");
+        String apiKey = config.getString("API_key");
+        String city = config.getString("city");
+        int updateInterval = config.getInt("update_interval");
 
         // Use configuration values in your plugin
         new WeatherCheckTask(apiKey, city, updateInterval).runTaskTimerAsynchronously(this, 0, updateInterval);
@@ -75,7 +79,7 @@ public class ActualWeather extends JavaPlugin {
                 });
 
             } catch (Exception e) {
-                e.printStackTrace();
+                getLogger().warning("Weather update failed!");
             }
         }
     }
@@ -92,6 +96,10 @@ public class ActualWeather extends JavaPlugin {
                 Bukkit.getWorlds().get(0).setStorm(true);
                 Bukkit.getWorlds().get(0).setThundering(true);
         }
+    }
+
+    public static ActualWeather getInstance() {
+        return instance;
     }
 }
 
