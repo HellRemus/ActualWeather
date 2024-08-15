@@ -1,1 +1,1 @@
-A plugin for PaperMC servers that checks the weather for a given city and applies clear, rain or thunder on the server.
+A plugin for PaperMC Minecraft servers that manages weather based on the weather of a real location.
